@@ -37,6 +37,7 @@ public class BeanValidator {
         validatorFactory = Validation
                 .byDefaultProvider()
                 .configure()
+                .addProperty( "hibernate.validator.fail_fast", isDebugMode() ? "false": "true"  )
                 .ignoreXmlConfiguration()
                 .messageInterpolator(new MessageInterpolator() {
                     @Override
