@@ -20,7 +20,7 @@ http://hibernate.org/validator/documentation/
 
 
 
-![image-20200518152652333](/Users/hss/aku/BeanValidatordemo/image-20200518152652333.png)
+![image-20200518152652333](image-20200518152652333.png)
 
 
 
@@ -32,19 +32,19 @@ BeanValidator.init(this);
 
 ## 使用
 
-![image-20200518152741233](/Users/hss/aku/BeanValidatordemo/image-20200518152741233.png)
+![image-20200518152741233](image-20200518152741233.png)
 
 ## 提供了中英文的默认文案:
 
-![image-20200518153928700](/Users/hss/aku/BeanValidatordemo/image-20200518153928700.png)
+![image-20200518153928700](image-20200518153928700.png)
 
-![image-20200518152831874](/Users/hss/aku/BeanValidatordemo/image-20200518152831874.png)
+![image-20200518152831874](image-20200518152831874.png)
 
 
 
 ## 自定义配置文案:
 
-![image-20200518152852237](/Users/hss/aku/BeanValidatordemo/image-20200518152852237.png)
+![image-20200518152852237](image-20200518152852237.png)
 
 
 
@@ -94,7 +94,7 @@ andResGuard {
 
 应该放到网络框架json解析的下一步,不要放到主线程
 
-![image-20200518153102618](/Users/hss/aku/BeanValidatordemo/image-20200518153102618.png)
+![image-20200518153102618](image-20200518153102618.png)
 
 
 
@@ -124,6 +124,6 @@ failFast：true 快速失败返回模式  false 普通模式
 
 
 
-![image-20200518160247483](/Users/hss/github/AndroidBeanValidator/image-20200518160247483.png)
+![image-20200518160247483](image-20200518160247483.png)
 
-![image-20200518160307881](/Users/hss/github/AndroidBeanValidator/image-20200518160307881.png)
+![image-20200518160307881](image-20200518160307881.png)
