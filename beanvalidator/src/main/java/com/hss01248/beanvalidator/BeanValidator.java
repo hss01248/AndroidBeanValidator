@@ -6,18 +6,23 @@ import android.content.pm.ApplicationInfo;
 import android.util.Log;
 
 
+import org.hibernate.validator.HibernateValidator;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.MessageInterpolator;
 import javax.validation.Validation;
+import javax.validation.ValidationProviderResolver;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.validation.constraints.NotNull;
 import javax.validation.metadata.ConstraintDescriptor;
+import javax.validation.spi.ValidationProvider;
 
 /**
  * by hss
@@ -34,39 +39,56 @@ public class BeanValidator {
         if(validatorFactory != null){
             return;
         }
-        try {
-            validatorFactory = Validation
-                    .byDefaultProvider()
-                    .configure()
-                    .addProperty( "hibernate.validator.fail_fast", isDebugMode() ? "false": "true"  )
-                    .ignoreXmlConfiguration()
-                    .messageInterpolator(new MessageInterpolator() {
-                        @Override
-                        public String interpolate(String messageTemplate, MessageInterpolator.Context context) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                validatorFactory = Validation
+                        .byDefaultProvider()
+                        .providerResolver(new ValidationProviderResolver() {
+                            @Override
+                            public List<ValidationProvider<?>> getValidationProviders() {
+                                List<ValidationProvider<?>> list = new ArrayList<>();
+                                list.add(new HibernateValidator());
+                                return list;
+                            }
+                        })
+                        .configure()
+                        .addProperty( "hibernate.validator.fail_fast", isDebugMode() ? "false": "true"  )
+                        .ignoreXmlConfiguration()
+                        .messageInterpolator(new MessageInterpolator() {
+                            @Override
+                            public String interpolate(String messageTemplate, MessageInterpolator.Context context) {
 
-                            try {
-                                //自己配的
-                                int id = app.getResources().getIdentifier(messageTemplate, "string", app.getPackageName());
-                                return app.getString(id);
-                            }catch (Throwable throwable){
-                                //库里默认的
-                                //throwable.printStackTrace();
-                                return readDefaultMsg(messageTemplate);
+                                try {
+                                    //自己配的
+                                    int id = app.getResources().getIdentifier(messageTemplate, "string", app.getPackageName());
+                                    return app.getString(id);
+                                }catch (Throwable throwable){
+                                    //库里默认的
+                                    //throwable.printStackTrace();
+                                    return readDefaultMsg(messageTemplate);
+                                }
+
+                                //return messageTemplate;
                             }
 
-                            //return messageTemplate;
-                        }
-
-                        @Override
-                        public String interpolate(String messageTemplate, Context context, Locale locale) {
-                            return interpolate(messageTemplate, context);
-                        }
-                    })
-                    .buildValidatorFactory();
-        }catch (Throwable throwable){
-            throwable.printStackTrace();
+                            @Override
+                            public String interpolate(String messageTemplate, Context context, Locale locale) {
+                                return interpolate(messageTemplate, context);
+                            }
+                        })
+                        .buildValidatorFactory();
+            }
+        };
+        if(isDebugMode()){
+            runnable.run();
+        }else {
+            try {
+                runnable.run();
+            }catch (Throwable throwable){
+                throwable.printStackTrace();
+            }
         }
-
     }
 
     private static int sIsDebugMode = -1;
