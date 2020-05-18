@@ -127,3 +127,31 @@ failFast：true 快速失败返回模式  false 普通模式
 ![image-20200518160247483](image-20200518160247483.png)
 
 ![image-20200518160307881](image-20200518160307881.png)
+
+# 兼容性
+
+## 首先配置
+
+```
+.ignoreXmlConfiguration()
+```
+
+## 在低版本(api16,19)上报找不到Log_$logger;
+
+```
+IllegalArgumentException: Invalid logger interface org.hibernate.validator.internal.util.logging.Log (implementation not found)
+```
+
+解决方法: 将Log_$logger拷出来,包路径不变,类名改成常规名字即可:
+
+![image-20200518180117670](image-20200518180117670.png)
+
+注意要编译成功,还需要依赖:
+
+```
+implementation group: 'javax.xml', name: 'jaxb-api', version: '2.1'
+implementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.1'
+```
+
+## 至此,可兼容到api16
+
