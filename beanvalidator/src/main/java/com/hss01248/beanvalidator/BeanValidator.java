@@ -34,34 +34,39 @@ public class BeanValidator {
         if(validatorFactory != null){
             return;
         }
-        validatorFactory = Validation
-                .byDefaultProvider()
-                .configure()
-                .addProperty( "hibernate.validator.fail_fast", isDebugMode() ? "false": "true"  )
-                .ignoreXmlConfiguration()
-                .messageInterpolator(new MessageInterpolator() {
-                    @Override
-                    public String interpolate(String messageTemplate, MessageInterpolator.Context context) {
+        try {
+            validatorFactory = Validation
+                    .byDefaultProvider()
+                    .configure()
+                    .addProperty( "hibernate.validator.fail_fast", isDebugMode() ? "false": "true"  )
+                    .ignoreXmlConfiguration()
+                    .messageInterpolator(new MessageInterpolator() {
+                        @Override
+                        public String interpolate(String messageTemplate, MessageInterpolator.Context context) {
 
-                        try {
-                            //自己配的
-                            int id = app.getResources().getIdentifier(messageTemplate, "string", app.getPackageName());
-                            return app.getString(id);
-                        }catch (Throwable throwable){
-                            //库里默认的
-                            //throwable.printStackTrace();
-                            return readDefaultMsg(messageTemplate);
+                            try {
+                                //自己配的
+                                int id = app.getResources().getIdentifier(messageTemplate, "string", app.getPackageName());
+                                return app.getString(id);
+                            }catch (Throwable throwable){
+                                //库里默认的
+                                //throwable.printStackTrace();
+                                return readDefaultMsg(messageTemplate);
+                            }
+
+                            //return messageTemplate;
                         }
 
-                        //return messageTemplate;
-                    }
+                        @Override
+                        public String interpolate(String messageTemplate, Context context, Locale locale) {
+                            return interpolate(messageTemplate, context);
+                        }
+                    })
+                    .buildValidatorFactory();
+        }catch (Throwable throwable){
+            throwable.printStackTrace();
+        }
 
-                    @Override
-                    public String interpolate(String messageTemplate, Context context, Locale locale) {
-                        return interpolate(messageTemplate, context);
-                    }
-                })
-                .buildValidatorFactory();
     }
 
     private static int sIsDebugMode = -1;

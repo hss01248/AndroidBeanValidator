@@ -127,3 +127,9 @@ failFast：true 快速失败返回模式  false 普通模式
 ![image-20200518160247483](/Users/hss/github/AndroidBeanValidator/image-20200518160247483.png)
 
 ![image-20200518160307881](/Users/hss/github/AndroidBeanValidator/image-20200518160307881.png)
+
+
+
+# 兼容性
+
+api 16-19初始化会失败
