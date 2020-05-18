@@ -1,0 +1,2 @@
+# AndroidBeanValidator
+beanvalidator
