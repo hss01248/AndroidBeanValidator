@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bean_validate_common_msg">字段%1s(%2s)%3s, 规则: %4s</string>
+    <!--javax.validation.constraints-->
+    <string name="size_message">长度错误</string>
+    <string name="assertfalse_message">判定为false</string>
+    <string name="asserttrue_message">判定为true</string>
+    <string name="decimalmax_message">超过decimal最大值</string>
+    <string name="decimalmin_message">超出decimal最小值</string>
+    <string name="digits_message">应该是数字</string>
+    <string name="future_message">应该是未来的时间</string>
+    <string name="max_message">超出最大值</string>
+    <string name="min_message">超出最小值</string>
+    <string name="notnull_message">应该不为空</string>
+    <string name="null_message">应该为空</string>
+    <string name="past_message">应该为过去的时间</string>
+    <string name="pattern_message">不符合规定的格式</string>
+
+    <!--org_hibernate_validator_constraints-->
+    <string name="email_message">应该是email格式</string>
+    <string name="length_message">不符合长度要求</string>
+    <string name="luhncheck_message">未通过luhn算法校验</string>
+    <string name="mod10check_message">未通过luhn-mod10算法校验</string>
+    <string name="mod11check_message">未通过luhn-mod11算法校验</string>
+    <string name="notblank_message">不得为空或空格字符</string>
+    <string name="notempty_message">不得为空</string>
+    <string name="range_message">不符合范围要求</string>
+    <string name="safehtml_message">html文本包含不安全元素</string>
+    <string name="scriptassert_message">脚本格式有误</string>
+    <string name="url_message">不是有效的url格式</string>
+</resources>

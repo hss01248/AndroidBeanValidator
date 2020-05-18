@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bean_validate_common_msg">%1s(%2s)%3s, rule: %4s</string>
+    <!--javax.validation.constraints-->
+    <string name="size_message">wrong size</string>
+    <string name="assertfalse_message">assert not false</string>
+    <string name="asserttrue_message">assert not true</string>
+    <string name="decimalmax_message">should not more then the max value of decimal</string>
+    <string name="decimalmin_message">should not less than min value of decimal</string>
+    <string name="digits_message">should be digits</string>
+    <string name="future_message">should be the time of future</string>
+    <string name="max_message">should be less then the max value</string>
+    <string name="min_message">should not be less then the max value</string>
+    <string name="notnull_message">should not be null</string>
+    <string name="null_message">should be null</string>
+    <string name="past_message">should be the time of past</string>
+    <string name="pattern_message">should fit the pattern</string>
+
+    <!--org_hibernate_validator_constraints-->
+    <string name="email_message">should be email format</string>
+    <string name="length_message">the length should be as required</string>
+    <string name="luhncheck_message">has not pass the check of luhn algorithm</string>
+    <string name="mod10check_message">has not pass the check of luhn-mode10 algorithm</string>
+    <string name="mod11check_message">has not pass the check of luhn-mode11 algorithm</string>
+    <string name="notblank_message">should not be blank</string>
+    <string name="notempty_message">should not be empty</string>
+    <string name="range_message">should meet the range</string>
+    <string name="safehtml_message">not safe html text</string>
+    <string name="scriptassert_message">is not script assert</string>
+    <string name="url_message">is not valid url</string>
+
+</resources>

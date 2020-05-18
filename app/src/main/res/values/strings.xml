@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">BeanValidatordemo</string>
+    <string name="error_empty">can not be empty!!!(custom msg)</string>
+    <string name="not_fit_length">length not right(custom msg)</string>
+</resources>
