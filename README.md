@@ -22,10 +22,6 @@ http://hibernate.org/validator/documentation/
 
 
 
-![image-20200518152652333](image-20200518152652333.png)
-
-
-
 ## 初始化
 
 ```
@@ -34,19 +30,25 @@ BeanValidator.init(this);
 
 ## 使用
 
-![image-20200518152741233](image-20200518152741233.png)
+![image-20200529144724999](http://hss01248.tech/uPic/2020-05-29-14-47-26-image-20200529144724999.png)
+
+
 
 ## 提供了中英文的默认文案:
 
-![image-20200518153928700](image-20200518153928700.png)
+![image-20200529144800253](http://hss01248.tech/uPic/2020-05-29-14-48-01-image-20200529144800253.png)
 
-![image-20200518152831874](image-20200518152831874.png)
+![image-20200529144823249](http://hss01248.tech/uPic/2020-05-29-14-48-24-image-20200529144823249.png)
+
+
 
 
 
 ## 自定义配置文案:
 
-![image-20200518152852237](image-20200518152852237.png)
+![image-20200529144851858](http://hss01248.tech/uPic/2020-05-29-14-48-53-image-20200529144851858.png)
+
+
 
 
 
@@ -74,9 +76,17 @@ Retrofit retrofit = new Retrofit.Builder()
 
 
 
+![image-20200529145402034](http://hss01248.tech/uPic/2020-05-29-14-54-03-image-20200529145402034.png)
+
+## 返回的msg的格式: 
+
+可以直接显示给用户
+
+![image-20200529145018717](http://hss01248.tech/uPic/2020-05-29-14-50-20-image-20200529145018717.png)
+
 # gradle使用:
 
-```css
+```java
 implementation 'com.github.hss01248.AndroidBeanValidator:beanvalidator:1.0.1'
 implementation 'com.github.hss01248.AndroidBeanValidator:gsonconvertervalidator:1.0.1'
 
@@ -113,9 +123,11 @@ andResGuard {
 
 主要耗时是框架内部反射.
 
+![image-20200529144936189](http://hss01248.tech/uPic/2020-05-29-14-49-37-image-20200529144936189.png)
+
 应该放到网络框架json解析的下一步,不要放到主线程
 
-![image-20200518153102618](image-20200518153102618.png)
+
 
 
 
@@ -143,11 +155,9 @@ failFast：true 快速失败返回模式  false 普通模式
 .addProperty( "hibernate.validator.fail_fast", isDebugMode() ? "false": "true"  )
 ```
 
+![image-20200529145108074](http://hss01248.tech/uPic/2020-05-29-14-51-09-image-20200529145108074.png)
 
 
-![image-20200518160247483](image-20200518160247483.png)
-
-![image-20200518160307881](image-20200518160307881.png)
 
 # 兼容性
 
@@ -165,7 +175,9 @@ IllegalArgumentException: Invalid logger interface org.hibernate.validator.inter
 
 解决方法: 将Log_$logger拷出来,包路径不变,类名改成常规名字即可:
 
-![image-20200518180117670](image-20200518180117670.png)
+![image-20200529145128566](http://hss01248.tech/uPic/2020-05-29-14-51-29-image-20200529145128566.png)
+
+
 
 注意要编译成功,还需要依赖:
 

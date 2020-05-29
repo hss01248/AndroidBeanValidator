@@ -79,6 +79,9 @@ public class BeanValidator {
         try {
             //自己配的
             int id = app.getResources().getIdentifier(template, "string", app.getPackageName());
+            if(id == 0){
+                return template;
+            }
             return app.getString(id);
         }catch (Throwable throwable){
             //库里默认的
