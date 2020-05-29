@@ -1,5 +1,7 @@
 # Hibernate Validator on Android
 
+[![](https://jitpack.io/v/hss01248/AndroidBeanValidator.svg)](https://jitpack.io/#hss01248/AndroidBeanValidator)
+
 ## 适用场景
 
 拿到后台数据后,如何更高效地校验数据有效性,而不是在代码里写一堆if else判断?
@@ -75,7 +77,9 @@ Retrofit retrofit = new Retrofit.Builder()
 # gradle使用:
 
 ```css
-implementation 'com.github.hss01248:AndroidBeanValidator:Tag'
+implementation 'com.github.hss01248.AndroidBeanValidator:beanvalidator:1.0.1'
+implementation 'com.github.hss01248.AndroidBeanValidator:gsonconvertervalidator:1.0.1'
+
 ```
 
 # 注意
