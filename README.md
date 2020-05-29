@@ -188,3 +188,9 @@ implementation group: 'javax.annotation', name: 'javax.annotation-api', version:
 
 ## 至此,可兼容到api16
 
+
+
+# 代码库:
+
+[AndroidBeanValidator](https://github.com/hss01248/AndroidBeanValidator)
+
