@@ -1,10 +1,10 @@
 # Hibernate Validator on Android
 
-## purpose
+## 适用场景
 
 拿到后台数据后,如何更高效地校验数据有效性,而不是在代码里写一堆if else判断?
 
-Bean Validation 2.0（JSR 380）定义了用于实体和方法验证的元数据模型和API，Hibernate Validator是目前最好的实现
+Bean Validation 2.0（JSR 380）定义了用于实体和方法验证的元数据模型和API，Hibernate Validator是目前最好的实现.
 
 参考:
 
