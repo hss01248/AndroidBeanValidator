@@ -61,6 +61,23 @@ if(!TextUtils.isEmpty(errorMsg)){
 }
 ```
 
+
+
+## retrofit使用
+
+```
+Retrofit retrofit = new Retrofit.Builder()
+        .addConverterFactory(GsonConverterFactoryWithBeanValidator.create())
+```
+
+
+
+# gradle使用:
+
+```css
+implementation 'com.github.hss01248:AndroidBeanValidator:Tag'
+```
+
 # 注意
 
 不能混淆相关的string资源. 

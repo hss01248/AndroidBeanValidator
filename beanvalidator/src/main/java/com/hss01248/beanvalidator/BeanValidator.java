@@ -1,28 +1,24 @@
 package com.hss01248.beanvalidator;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.pm.ApplicationInfo;
+import android.text.TextUtils;
 import android.util.Log;
 
 
-import org.hibernate.validator.HibernateValidator;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.MessageInterpolator;
 import javax.validation.Validation;
-import javax.validation.ValidationProviderResolver;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.validation.constraints.NotNull;
 import javax.validation.metadata.ConstraintDescriptor;
-import javax.validation.spi.ValidationProvider;
 
 /**
  * by hss
@@ -39,83 +35,44 @@ public class BeanValidator {
         if(validatorFactory != null){
             return;
         }
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                validatorFactory = Validation
-                        .byDefaultProvider()
-                        .providerResolver(new ValidationProviderResolver() {
-                            @Override
-                            public List<ValidationProvider<?>> getValidationProviders() {
-                                List<ValidationProvider<?>> list = new ArrayList<>();
-                                list.add(new HibernateValidator());
-                                return list;
-                            }
-                        })
-                        .configure()
-                        .addProperty( "hibernate.validator.fail_fast", isDebugMode() ? "false": "true"  )
-                        .ignoreXmlConfiguration()
-                        .messageInterpolator(new MessageInterpolator() {
-                            @Override
-                            public String interpolate(String messageTemplate, MessageInterpolator.Context context) {
+        validatorFactory = Validation
+                .byDefaultProvider()
+                .configure()
+                .ignoreXmlConfiguration()
+                .messageInterpolator(new MessageInterpolator() {
+                    @Override
+                    public String interpolate(String messageTemplate, MessageInterpolator.Context context) {
 
-                                try {
-                                    //自己配的
-                                    int id = app.getResources().getIdentifier(messageTemplate, "string", app.getPackageName());
-                                    return app.getString(id);
-                                }catch (Throwable throwable){
-                                    //库里默认的
-                                    //throwable.printStackTrace();
-                                    return readDefaultMsg(messageTemplate);
-                                }
+                        try {
+                            //自己配的
+                            int id = app.getResources().getIdentifier(messageTemplate, "string", app.getPackageName());
+                            return app.getString(id);
+                        }catch (Throwable throwable){
+                            //库里默认的
+                            //throwable.printStackTrace();
+                            return readDefaultMsg(messageTemplate);
+                        }
 
-                                //return messageTemplate;
-                            }
+                        //return messageTemplate;
+                    }
 
-                            @Override
-                            public String interpolate(String messageTemplate, Context context, Locale locale) {
-                                return interpolate(messageTemplate, context);
-                            }
-                        })
-                        .buildValidatorFactory();
-            }
-        };
-        if(isDebugMode()){
-            runnable.run();
-        }else {
-            try {
-                runnable.run();
-            }catch (Throwable throwable){
-                throwable.printStackTrace();
-            }
-        }
-    }
-
-    private static int sIsDebugMode = -1;
-    public static boolean isDebugMode() {
-        if (sIsDebugMode == -1) {
-            boolean isDebug = app.getApplicationInfo() != null
-                    && (app.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
-            sIsDebugMode = isDebug ? 1 : 0;
-        }
-        return sIsDebugMode == 1;
+                    @Override
+                    public String interpolate(String messageTemplate, Context context, Locale locale) {
+                        return interpolate(messageTemplate, context);
+                    }
+                })
+                .buildValidatorFactory();
     }
 
     private static String readDefaultMsg(String template) {
-        if(isDebugMode()){
-            Log.d("interpolate",template);
-        }
-
+        Log.d("interpolate",template);
         template = template.replace("{","")
                 .replace("}","")
                 .replace("org.hibernate.validator.constraints.","")
                 .replace("javax.validation.constraints.","")
                 .toLowerCase()
                 .replace(".","_");
-        if(isDebugMode()){
-            Log.d("interpolate2",template);
-        }
-
+        Log.d("interpolate2",template);
         try {
             //自己配的
             int id = app.getResources().getIdentifier(template, "string", app.getPackageName());
@@ -133,32 +90,55 @@ public class BeanValidator {
      * @return 返回为空,则
      */
     public static <T> String validate(@NotNull T bean) {
-        if(validatorFactory == null){
+        if(bean == null){
             return "";
         }
+        if(notJavaBean(bean)){
+            return "";
+        }
+
         try {
-            if(validator == null){
-                validator = validatorFactory.getValidator();
-            }
+            String errorMsg= "";
+            if(bean instanceof List){
+                List list = (List) bean;
+                if(!list.isEmpty()){
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < list.size(); i++) {
+                        Object obj = list.get(i);
+                            String msg = validateRealBean(obj);
+                            if(!TextUtils.isEmpty(msg)){
+                                sb.append("posion:")
+                                        .append(i)
+                                        .append(" :")
+                                        .append(msg)
+                                        .append("\n");
+                            }
+                    }
+                    errorMsg = sb.toString();
+                }
+            }else if(bean.getClass().isArray()){
+                Object[] arr = (Object[]) bean;
+                if( arr.length>0){
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < arr.length; i++) {
+                        Object obj = arr[i];
+                        String msg = validateRealBean(obj);
+                        if(!TextUtils.isEmpty(msg)){
+                            sb.append("posion:")
+                                    .append(i)
+                                    .append(" :")
+                                    .append(msg)
+                                    .append("\n");
+                        }
+                    }
+                    errorMsg = sb.toString();
+                }
 
-            final Set<ConstraintViolation<T>> constraintViolations = validator.validate(bean);
-            if(constraintViolations == null || constraintViolations.isEmpty()){
-                return "";
+            }else {
+                errorMsg =  validateRealBean(bean);
             }
-
-            StringBuilder sb = new StringBuilder();
-            for (final ConstraintViolation<T> violation : constraintViolations) {
-                String str = String.format(app.getResources().getString(R.string.bean_validate_common_msg),
-                        violation.getPropertyPath(),getValueStr(violation.getInvalidValue()),violation.getMessage(),
-                        getRuleStr(violation));
-                sb.append(str).append("\n");
-            }
-            String str = sb.toString();
-            if(isDebugMode()){
-                Log.w("validate","88\n"+ str);
-            }
-
-            return str;
+            Log.w("validate","end\nmsg:"+ errorMsg);
+            return errorMsg;
         }catch (Throwable throwable){
             throwable.printStackTrace();
             return "";
@@ -166,6 +146,62 @@ public class BeanValidator {
 
 
 
+    }
+
+    private static <T> String validateRealBean(@NotNull T bean ) {
+        if(bean == null){
+            return "";
+        }
+        if(notJavaBean(bean)){
+            return "";
+        }
+        Class clazz = bean.getClass();
+        Log.w("validate","bean.getClass():"+clazz);
+        boolean needValidate =  clazz.getAnnotation(NeedValidate.class)  != null;
+        if(!needValidate){
+            Log.w("validate","没有NeedValidate注解,不需要校验");
+            return "";
+        }
+
+        if(validatorFactory == null){
+            return "";
+        }
+        if(validator == null){
+            validator = validatorFactory.getValidator();
+        }
+
+        final Set<ConstraintViolation<T>> constraintViolations = validator.validate(bean);
+        if(constraintViolations == null || constraintViolations.isEmpty()){
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (final ConstraintViolation<T> violation : constraintViolations) {
+            String str = String.format(app.getResources().getString(R.string.bean_validate_common_msg),
+                    violation.getPropertyPath(),getValueStr(violation.getInvalidValue()),violation.getMessage(),
+                    getRuleStr(violation));
+            sb.append(str).append("\n");
+        }
+        String str = sb.toString();
+        return str;
+    }
+
+    private static <T> boolean notJavaBean(T bean) {
+
+        if(bean instanceof String){
+            return false;
+        }
+        if(bean instanceof Map){
+            return true;
+        }
+        Class clazz = bean.getClass();
+        if(clazz.isPrimitive()){
+            return true;
+        }
+        if(clazz.isEnum()){
+            return true;
+        }
+        return false;
     }
 
     private static Object getValueStr(Object invalidValue) {

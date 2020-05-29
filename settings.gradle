@@ -1,2 +1,2 @@
-include ':app', ':beanvalidator'
+include ':app', ':beanvalidator', ':gsonconvertervalidator'
 rootProject.name='BeanValidatordemo'
