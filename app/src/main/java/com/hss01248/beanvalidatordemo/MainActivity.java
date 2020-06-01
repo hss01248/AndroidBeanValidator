@@ -68,5 +68,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void report(View view){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Reporter.report();
+            }
+        }).start();
+
+    }
+
 
 }
