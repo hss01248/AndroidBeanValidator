@@ -1,2 +1,4 @@
+include ':hibernateval'
+include ':apacheval'
 include ':app', ':beanvalidator', ':gsonconvertervalidator'
 rootProject.name='BeanValidatordemo'

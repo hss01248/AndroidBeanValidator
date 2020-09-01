@@ -1,6 +1,7 @@
 package com.hss01248.beanvalidator;
 
 import android.app.Application;
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -12,13 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.MessageInterpolator;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import javax.validation.constraints.NotNull;
-import javax.validation.metadata.ConstraintDescriptor;
+
 
 /**
  * by hss
@@ -26,48 +21,20 @@ import javax.validation.metadata.ConstraintDescriptor;
  * desc:不能混淆string资源. 如果使用andresgruard,可以将验证翻译放到同一个xml文件中,然后添加忽略
  */
 public class BeanValidator {
-    private static ValidatorFactory validatorFactory;
-    private static Application app;
-    static Validator validator;
 
-    public static void init(final Application app){
+    public static Application app;
+    static IValidateBean validator;
+    /**
+     * 全局开关控制
+     */
+    public static boolean globalSwitch = true;
+
+    public static void init(final Application app,IValidateBean validator){
         BeanValidator.app = app;
-        if(validatorFactory != null){
-            return;
-        }
-        validatorFactory = Validation
-                .byDefaultProvider()
-                .configure()
-                .ignoreXmlConfiguration()
-                .messageInterpolator(new MessageInterpolator() {
-                    @Override
-                    public String interpolate(String messageTemplate, MessageInterpolator.Context context) {
-
-                        try {
-                            //自己配的
-                            int id = app.getResources().getIdentifier(messageTemplate, "string", app.getPackageName());
-                            if(id == 0){
-                                return readDefaultMsg(messageTemplate);
-                            }
-                            return app.getString(id);
-                        }catch (Throwable throwable){
-                            //库里默认的
-                            //throwable.printStackTrace();
-                            return readDefaultMsg(messageTemplate);
-                        }
-
-                        //return messageTemplate;
-                    }
-
-                    @Override
-                    public String interpolate(String messageTemplate, Context context, Locale locale) {
-                        return interpolate(messageTemplate, context);
-                    }
-                })
-                .buildValidatorFactory();
+        BeanValidator.validator = validator;
     }
 
-    private static String readDefaultMsg(String template) {
+    public static String readDefaultMsg(String template) {
         Log.d("interpolate",template);
         template = template.replace("{","")
                 .replace("}","")
@@ -93,10 +60,16 @@ public class BeanValidator {
     /**
      *
      * @param bean
-     * @return 返回为空,则
+     * @return 返回错误信息,如果返回空,则代表校验通过
      */
-    public static <T> String validate(@NotNull T bean) {
+    public static <T> String validate( T bean) {
+        if(!globalSwitch){
+            return "";
+        }
         if(bean == null){
+            return "";
+        }
+        if(validator == null){
             return "";
         }
         if(notJavaBean(bean)){
@@ -154,7 +127,7 @@ public class BeanValidator {
 
     }
 
-    private static <T> String validateRealBean(@NotNull T bean ) {
+    private static <T> String validateRealBean( T bean ) {
         if(bean == null){
             return "";
         }
@@ -168,28 +141,7 @@ public class BeanValidator {
             Log.w("validate","没有NeedValidate注解,不需要校验");
             return "";
         }
-
-        if(validatorFactory == null){
-            return "";
-        }
-        if(validator == null){
-            validator = validatorFactory.getValidator();
-        }
-
-        final Set<ConstraintViolation<T>> constraintViolations = validator.validate(bean);
-        if(constraintViolations == null || constraintViolations.isEmpty()){
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (final ConstraintViolation<T> violation : constraintViolations) {
-            String str = String.format(app.getResources().getString(R.string.bean_validate_common_msg),
-                    violation.getPropertyPath(),getValueStr(violation.getInvalidValue()),violation.getMessage(),
-                    getRuleStr(violation));
-            sb.append(str).append("\n");
-        }
-        String str = sb.toString();
-        return str;
+        return validator.validateRealBean(bean);
     }
 
     private static <T> boolean notJavaBean(T bean) {
@@ -220,7 +172,7 @@ public class BeanValidator {
         return invalidValue+"";
     }
 
-    private static Object getRuleStr(ConstraintViolation violation) {
+    /*private static Object getRuleStr(ConstraintViolation violation) {
         ConstraintDescriptor descriptor = violation.getConstraintDescriptor();
         if(descriptor == null){
             return "";
@@ -237,5 +189,5 @@ public class BeanValidator {
         str = str.replaceAll("message=.* {1}","")
                 .replaceAll("message=.*\\){1}",")");
         return str;
-    }
+    }*/
 }
