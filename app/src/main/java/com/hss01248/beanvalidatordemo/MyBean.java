@@ -2,8 +2,8 @@ package com.hss01248.beanvalidatordemo;
 
 import com.hss01248.beanvalidator.NeedValidate;
 
-import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
  */
 @NeedValidate
 public class MyBean {
-    @NotEmpty(message = "error_empty")
+    @NotNull(message = "error_empty")
     @Size(min = 1, max = 16,message = "not_fit_length")
     public String name;
 
