@@ -123,6 +123,10 @@ andResGuard {
 
 首次initfactory很卡,后续100-300ms
 
+apache Bval一样:
+
+![image-20200901124721791](http://hss01248.tech/uPic/2020-09-01-12-47-22-image-20200901124721791.png)
+
 主要耗时是框架内部反射.
 
 ![image-20200529144936189](http://hss01248.tech/uPic/2020-05-29-14-49-37-image-20200529144936189.png)

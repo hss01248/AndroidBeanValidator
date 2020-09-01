@@ -36,10 +36,16 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     api project(':beanvalidator')
-    implementation group: 'org.apache.bval', name: 'bval-jsr', version: '1.1.2'
+
     //2.0.4  jsr380 bean validation2.0 2017.08发布
     //1.1.2  jsr349 bean validation1.1 2038发布
     //implementation group: 'org.apache.bval', name: 'org.apache.bval.bundle', version: '2.0.4'
     //implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.0'
-    api group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'//2.0.1.Final
+
+    //api group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'//2.0.1.Final
+    //implementation group: 'org.apache.bval', name: 'bval-jsr', version: '1.1.2'
+
+    //jsr 2.0:
+    api group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'//2.0.1.Final
+    implementation group: 'org.apache.bval', name: 'bval-jsr', version: '2.0.4'
 }
