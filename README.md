@@ -1,4 +1,4 @@
-# Hibernate Validator on Android
+# Bean Validator on Android
 
 [![](https://jitpack.io/v/hss01248/AndroidBeanValidator.svg)](https://jitpack.io/#hss01248/AndroidBeanValidator)
 
@@ -6,15 +6,11 @@
 
 拿到后台数据后,如何更高效地校验数据有效性,而不是在代码里写一堆if else判断?
 
-Bean Validation 2.0（JSR 380）定义了用于实体和方法验证的元数据模型和API，Hibernate Validator是目前最好的实现.
-
-参考:
-
-https://stackoverflow.com/questions/29315472/android-and-hibernate-validator-it-is-possible-to-use-together
-
-http://hibernate.org/validator/documentation/
+![image-20200901150246361](http://hss01248.tech/uPic/2020-09-01-15-02-47-image-20200901150246361.png)
 
 
+
+> 要移植到Android,需要考虑java8兼容性问题,性能,以及对apk大小的影响,默认使用的是Apache BVal 1.1.2
 
 
 
@@ -87,8 +83,10 @@ Retrofit retrofit = new Retrofit.Builder()
 # gradle使用:
 
 ```java
-implementation 'com.github.hss01248.AndroidBeanValidator:beanvalidator:1.0.1'
-implementation 'com.github.hss01248.AndroidBeanValidator:gsonconvertervalidator:1.0.1'
+implementation 'com.github.hss01248.AndroidBeanValidator:apacheval:1.0.2'//默认使用Apache BVal
+  //如果使用hibernate:
+  implementation 'com.github.hss01248.AndroidBeanValidator:hibernateval:1.0.2'
+implementation 'com.github.hss01248.AndroidBeanValidator:gsonconvertervalidator:1.0.2'
 
 ```
 
@@ -115,21 +113,29 @@ andResGuard {
 
 
 
+# apk
 
+大小相差不大
+
+![image-20200901144216387](http://hss01248.tech/uPic/2020-09-01-14-42-16-image-20200901144216387.png)
 
 # 方法耗时
 
-![image-20200901095510578](http://hss01248.tech/uPic/2020-09-01-09-55-11-image-20200901095510578.png)
+Apache Bval
 
-首次initfactory很卡,后续100-300ms
+第一次初始化validate factory比较耗时,后续很快
 
-主要耗时是框架内部反射.
-
-![image-20200529144936189](http://hss01248.tech/uPic/2020-05-29-14-49-37-image-20200529144936189.png)
-
-应该放到网络框架json解析的下一步,不要放到主线程
+![image-20200901143534698](http://hss01248.tech/uPic/2020-09-01-14-35-36-image-20200901143534698.png)
 
 
+
+
+
+
+
+
+
+# ps.hibernate的兼容
 
 
 
@@ -159,9 +165,7 @@ failFast：true 快速失败返回模式  false 普通模式
 
 ![image-20200529145108074](http://hss01248.tech/uPic/2020-05-29-14-51-09-image-20200529145108074.png)
 
-
-
-# 兼容性
+## 兼容性
 
 ## 首先配置
 
@@ -195,4 +199,14 @@ implementation group: 'javax.annotation', name: 'javax.annotation-api', version:
 # 代码库:
 
 [AndroidBeanValidator](https://github.com/hss01248/AndroidBeanValidator)
+
+# 参考:
+
+[不吹不擂，提升你对BeanValidation数据校验的认知](https://www.toutiao.com/i6865868352225706508/?timestamp=1598943642&app=news_article&group_id=6865868352225706508&use_new_style=1&req_id=2020090115004201002202707421020F17)
+
+[SpringMVC中实现Bean Validation(JSR 303 JSR 349 JSR 380)](https://blog.csdn.net/weixin_30399155/article/details/101420321)
+
+https://stackoverflow.com/questions/29315472/android-and-hibernate-validator-it-is-possible-to-use-together
+
+http://hibernate.org/validator/documentation/
 

@@ -2,8 +2,6 @@ package com.hss01248.beanvalidatordemo;
 
 import android.app.Application;
 
-
-import com.hss01248.android.apacheval.ApacheBvalImpl;
 import com.hss01248.beanvalidator.BeanValidator;
 
 
@@ -20,7 +18,7 @@ public class BaseApp extends Application {
     public void onCreate() {
         super.onCreate();
         app = this;
-        BeanValidator.init(this,new ApacheBvalImpl());
+        BeanValidator.init(this);
     }
 
 

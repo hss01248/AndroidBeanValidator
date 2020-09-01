@@ -13,6 +13,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.Configuration;
+import javax.validation.ConstraintViolation;
+import javax.validation.MessageInterpolator;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import javax.validation.metadata.ConstraintDescriptor;
 
 
 /**
@@ -22,16 +29,16 @@ import java.util.Set;
  */
 public class BeanValidator {
 
-    public static Application app;
-    static IValidateBean validator;
+     static Application app;
+     static ValidatorFactory validatorFactory;
+    static Validator validator;
     /**
      * 全局开关控制
      */
     public static boolean globalSwitch = true;
 
-    public static void init(final Application app,IValidateBean validator){
+    public static void init(final Application app){
         BeanValidator.app = app;
-        BeanValidator.validator = validator;
     }
 
     public static String readDefaultMsg(String template) {
@@ -69,9 +76,6 @@ public class BeanValidator {
         if(bean == null){
             return "";
         }
-        if(validator == null){
-            return "";
-        }
         if(notJavaBean(bean)){
             return "";
         }
@@ -88,7 +92,7 @@ public class BeanValidator {
                             if(!TextUtils.isEmpty(msg)){
                                 sb.append("posion:")
                                         .append(i)
-                                        .append(" :")
+                                        .append(" in list:")
                                         .append(msg)
                                         .append("\n");
                             }
@@ -105,7 +109,7 @@ public class BeanValidator {
                         if(!TextUtils.isEmpty(msg)){
                             sb.append("posion:")
                                     .append(i)
-                                    .append(" :")
+                                    .append(" in array:")
                                     .append(msg)
                                     .append("\n");
                         }
@@ -141,7 +145,71 @@ public class BeanValidator {
             Log.w("validate","没有NeedValidate注解,不需要校验");
             return "";
         }
-        return validator.validateRealBean(bean);
+        if(validatorFactory == null){
+            validatorFactory = init();
+        }
+        if(validator == null){
+            validator = validatorFactory.getValidator();
+        }
+
+        final Set<ConstraintViolation<T>> constraintViolations = validator.validate(bean);
+        if(constraintViolations == null || constraintViolations.isEmpty()){
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (final ConstraintViolation<T> violation : constraintViolations) {
+            String str = String.format(BeanValidator.app.getResources().getString(com.hss01248.beanvalidator.R.string.bean_validate_common_msg),
+                    violation.getPropertyPath(),getValueStr(violation.getInvalidValue()),violation.getMessage(),
+                    getRuleStr(violation));
+            sb.append(str).append("\n");
+        }
+        String str = sb.toString();
+        return str;
+    }
+
+    private static ValidatorFactory init() {
+        Configuration configuration =  null;
+        try {
+            Class clazz = Class.forName("org.apache.bval.jsr.ApacheValidationProvider");
+            configuration = Validation
+                    .byProvider(clazz)
+                    .configure();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            configuration = Validation
+                    .byDefaultProvider()
+                    .configure();
+        }
+        validatorFactory = configuration
+                .ignoreXmlConfiguration()
+                .messageInterpolator(new MessageInterpolator() {
+                    @Override
+                    public String interpolate(String messageTemplate, MessageInterpolator.Context context) {
+
+                        try {
+                            //自己配的
+                            int id = BeanValidator.app.getResources().getIdentifier(messageTemplate, "string", BeanValidator.app.getPackageName());
+                            if(id == 0){
+                                return BeanValidator.readDefaultMsg(messageTemplate);
+                            }
+                            return BeanValidator.app.getString(id);
+                        }catch (Throwable throwable){
+                            //库里默认的
+                            //throwable.printStackTrace();
+                            return BeanValidator.readDefaultMsg(messageTemplate);
+                        }
+
+                        //return messageTemplate;
+                    }
+
+                    @Override
+                    public String interpolate(String messageTemplate, MessageInterpolator.Context context, Locale locale) {
+                        return interpolate(messageTemplate, context);
+                    }
+                })
+                .buildValidatorFactory();
+        return validatorFactory;
     }
 
     private static <T> boolean notJavaBean(T bean) {
@@ -172,7 +240,7 @@ public class BeanValidator {
         return invalidValue+"";
     }
 
-    /*private static Object getRuleStr(ConstraintViolation violation) {
+    private static Object getRuleStr(ConstraintViolation violation) {
         ConstraintDescriptor descriptor = violation.getConstraintDescriptor();
         if(descriptor == null){
             return "";
@@ -189,5 +257,5 @@ public class BeanValidator {
         str = str.replaceAll("message=.* {1}","")
                 .replaceAll("message=.*\\){1}",")");
         return str;
-    }*/
+    }
 }

@@ -35,11 +35,11 @@ public class MainActivity extends AppCompatActivity {
         bean.name = "";
         bean.password = "9";
 
-        Debug.startMethodTracing(getExternalFilesDir("method").getAbsolutePath());
+        //Debug.startMethodTracing(getExternalFilesDir("method").getAbsolutePath());
         long start = System.currentTimeMillis();
         String errorMsg = BeanValidator.validate(bean);
         Log.d("dd","bean校验耗时:"+(System.currentTimeMillis() - start)+"ms");
-        Debug.stopMethodTracing();
+        //Debug.stopMethodTracing();
         if(!TextUtils.isEmpty(errorMsg)){
             Toast.makeText(this,errorMsg,Toast.LENGTH_LONG).show();
         }else {
