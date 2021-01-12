@@ -10,7 +10,7 @@
 
 
 
-> 要移植到Android,需要考虑java8兼容性问题,性能,以及对apk大小的影响,默认使用的是Apache BVal 1.1.2
+> 要移植到Android,需要考虑java8兼容性问题,性能(方法耗时),以及对apk大小的影响,默认使用的是Apache BVal 1.1.2
 
 
 
