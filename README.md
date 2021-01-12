@@ -121,21 +121,23 @@ andResGuard {
 
 # 方法耗时
 
-Apache Bval
+### Apache Bval
 
 第一次初始化validate factory比较耗时,后续很快
 
+第一次几百ms级别,后续是ms级别
+
 ![image-20200901143534698](http://hss01248.tech/uPic/2020-09-01-14-35-36-image-20200901143534698.png)
 
+### hibernate validator 稍微差一点点
+
+![image-20210112170225457](https://gitee.com/hss012489/picbed/raw/master/picgo/1610442151154-image-20210112170225457.jpg)
 
 
 
 
 
-
-
-
-# ps.hibernate的兼容
+# ps.hibernate Validator的兼容
 
 
 
